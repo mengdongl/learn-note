@@ -1,0 +1,152 @@
+一、把css用在html上的5种方式
+1.link标签。
+2.style元素。
+3.@import指令。 格式: @import url(style.css) all  (注意:@import指令必须放在样式表的开头，否则无效)
+4.内联样式。
+5.http链接。
+
+二、媒体查询
+媒体查询通过@media指令实现，响应式布局的实现依赖的就是媒体查询。
+格式: @media only(可选) screen (min-width:500px) and (color) and ...
+
+三、特性查询
+格式: @supports (display:grid) and (display:flex) or ... not
+媒体查询与特性查询可以互相嵌套使用。
+
+四、选择符
+1.元素选择符：
+p{
+选择p元素
+}
+
+2.群组选择符:
+p,h1,.name {
+同时选择p、h1、类为name的元素
+}
+
+3.类选择符与id选择符:
+.name.age{
+选择同时拥有类name和类age的元素
+}
+
+4.属性选择符:
+p[title]{
+    选择有title属性的p元素
+}
+p[title='mdl']{
+    选择title值为'mdl'的p元素
+}
+p[title|='mdl']{
+    选择title值为'mdl'或'mdl-...'格式的p元素
+}
+p[title~='mdl']{
+    选择title值有一组词为'mdl'的p元素，如:'mdl xyj'
+}
+p[title*='mdl']{
+    选择title值有'mdl'字串的p元素，如:'mdlsb'
+}
+p[title^='mdl']{
+    选择title值以'mdl'开头的p元素，如:'mdlsb'
+}
+p[title$='mdl']{
+    选择title值以'mdl'结尾的p元素，如:'sbmdl'
+}
+
+5.父子选择符
+选择后代: p h1{
+    选择p元素的所有后代h1元素
+}
+选择子元素 div > p {
+    选择div元素的所有直接子元素p
+} 
+选择紧邻同胞元素 h1 + p{
+    选择紧跟在h1之后的p元素,且这两个元素有同一个父元素。
+}
+选择后续同胞 h1 ~ p{
+    选择h1之后的所有p元素，且这两个元素有同一个父元素。
+}
+
+6.伪类选择符
+(1)结构伪类
+:root{
+    选择根元素
+}
+:empty{
+    选择没有任何子代的元素
+}
+img:only-child{
+    选择img元素，且这个元素为其父元素的唯一子元素。
+}
+img:only-of-type{
+    选择img元素，且这个元素为其父元素img种类子元素的唯一元素(也就是说父元素的子元素中没有两个img元素)。
+}
+li:first-child{
+    选择li元素,且这个li元素是其父元素的第一个子元素。
+}
+li:last-child{
+    选择li元素,且这个li元素是其父元素的最后一个子元素。
+}
+table:first-of-type{
+    选择一个元素中的第一个table元素。
+}
+table:last-of-type{
+    选择一个元素中的最后一个table元素。
+}
+li:nth-child(n||odd||even){
+    选择一个元素中的第n||odd||even位的li元素
+}
+li:nth-of-type(n||odd||even){
+    选择一个元素中li元素中的第n||odd||even位li元素
+}
+
+(2)动态伪类
+a:link{
+选择尚未访问的超链接
+}
+a:visited{
+选择已访问的超链接
+}
+a:focus{
+
+}
+a:hover{
+
+}
+a:active{
+
+}
+
+(3)UI伪类
+
+(4):target{
+选择url中片段标识符指向的元素
+}
+
+(5):lang(指定语言)
+根据文本所使用的语言选择元素
+
+(6):not(简单选择符)
+例如：li:not(.name){
+    选择没有name类的所有li元素
+}
+
+7.伪元素选择符
+p::first-letter{
+选择p元素内容的首字母
+}
+p::first-line{
+    选择p元素内容的第一行
+}
+(目前，::first-letter和::first-line伪元素只能用于块级元素)
+h2::before{
+    content:"]]";
+    color:silver;
+}
+h2::after{
+    content:"]]";
+    color:silver;
+}
+装饰h2标题内容的前置、后置内容元素。
+
+
+

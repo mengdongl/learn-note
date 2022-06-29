@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        {{message}}
+        <button @click="changeMsg">按钮</button>
+        {{shareDate.message}}
+        <p v-for="(item,index) of a" :key="index">{{item}}</p>
+        <anchored-heading :level="level" :mdl="132">{{reversedMessage}}</anchored-heading>
+    </div>
+    <div id="app2">
+        {{message}}
+        <button @click="changeMsg">按钮</button>
+        {{shareDate.message}}
+        <p v-for="(item,index) of a" :key="index">{{item}}</p>
+        <anchored-heading :level="level">{{reversedMessage}}</anchored-heading>
+    </div>
+    <script src="./main.mjs"></script>
+    <script>
+        let anchoredHeading = {
+            inheritAttrs:false,
+            template: `<div>
+                <h1 v-if="level==1"><span>测试</span><a><slot></slot></a></h1>
+                <h2 v-if="level==2"><span>测试</span><a><slot></slot></a></h2>
+                <h3 v-if="level==3"><span>测试</span><a><slot></slot></a></h3>
+                <h4 v-if="level==4"><span>测试</span><a><slot></slot></a></h4>
+                <h5 v-if="level==5"><span>测试</span><a><slot></slot></a></h5>
+                <h6 v-if="level==6"><span>测试</span><a><slot></slot></a></h6>
+                </div>`,
+            render(h) {
+                return h('div', [h('h' + this.level, [h('a', this.$slots.default)])])
+            },
+            created(){
+                console.log(this.$attrs)
+            },
+            props: {
+                level: {
+                    type: Number,
+                    require: true
+                }
+            },
+            watch: {
+            }
+        }
+        const store = {
+            debug: true,
+            state: {
+                message: 'Hello!'
+            },
+            setMessageAction(newValue) {
+                if (this.debug) console.log('setMessageAction triggered with', newValue)
+                this.state.message = newValue
+            },
+            clearMessageAction() {
+                if (this.debug) console.log('clearMessageAction triggered')
+                this.state.message = ''
+            }
+        }
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'HelloWord!nmsl',
+                level: 1,
+                a: [],
+                shareDate:store.state
+            },
+            components: {
+                'anchored-heading': anchoredHeading
+            },
+            created() {
+            },
+            methods: {
+                changeMsg() {
+                    this.message += 'mdl'
+                    this.level += 1
+                    this.a[0] = '1'
+                    store.setMessageAction('vuex :1')
+                    // this.$forceUpdate()
+                    console.log(this.a)
+                },
+                // reversedMessage: function () {
+                //     console.log('methods')
+                //     return this.message.split('').reverse().join('')
+                // }
+            },
+            computed: {
+                reversedMessage() {
+                    return this.message.split('').reverse().join('')
+                }
+            }
+        })
+        var app2 = new Vue({
+            el: '#app2',
+            data: {
+                message: 'HelloWord!nmsl',
+                level: 1,
+                a: [],
+                shareDate:store.state
+            },
+            components: {
+                'anchored-heading': anchoredHeading
+            },
+            created() {
+            },
+            methods: {
+                changeMsg() {
+                    this.message += 'mdl'
+                    this.level += 1
+                    this.a[0] = '1'
+                    store.setMessageAction('vuex :2')
+                    // this.$forceUpdate()
+                    console.log(this.a)
+                },
+                // reversedMessage: function () {
+                //     console.log('methods')
+                //     return this.message.split('').reverse().join('')
+                // }
+            },
+            computed: {
+                reversedMessage() {
+                    return this.message.split('').reverse().join('')
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
