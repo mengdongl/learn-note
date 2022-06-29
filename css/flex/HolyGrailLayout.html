@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        footer,
+        header {
+            background-color: gray;
+            flex: 0 0 5em;
+        }
+
+        .HolyGrail-body {
+            display: flex;
+            flex: 1;
+        }
+
+        .HolyGrail-nav {
+            background-color: lightskyblue;
+            order: -1;
+        }
+
+        .HolyGrail-ads {
+            background-color: orangered;
+        }
+
+        .HolyGrail-nav,
+        .HolyGrail-ads {
+            flex: 0 0 12em;
+        }
+
+        .HolyGrail-content {
+            background-color: thistle;
+            flex: 1;
+        }
+
+        .HolyGrail {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .parent{
+            width: 200px;
+            height: 150px;
+            background-color: black;
+            display: flex;
+            flex-flow: row wrap;
+            align-content: flex-start;
+        }
+        .child{
+            box-sizing: border-box;
+            background-color: white;
+            border: 1px solid red;
+            flex: 0 0 25%;
+            height: 50px;
+        }
+        .center{
+            width: 300px;
+            height: 300px;
+            background-color: pink;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="HolyGrail">
+        <header></header>
+        <div class="HolyGrail-body">
+            <main class="HolyGrail-content">
+                <div class="parent">
+                    <div class="child"></div>
+                    <div class="child"></div>
+                    <div class="child"></div>
+                    <div class="child"></div>
+                    <div class="child"></div>
+                </div>
+                <div class="center">
+                    <img src="../imgs/fw.jpg" width="100" height="100" alt="">
+                </div>
+            </main>
+            <nav class="HolyGrail-nav"></nav>
+            <aside class="HolyGrail-ads"></aside>
+        </div>
+        <footer></footer>
+    </div>
+</body>
+
+</html>

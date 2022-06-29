@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-auto-rows: 10px;
+            height: 100vh;
+            overflow-y: scroll;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="img-container">
+            <img src="./imgs/2.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/5.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/6.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/7.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/2.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/6.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/5.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/6.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/7.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/2.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/6.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/5.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/2.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/5.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/6.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/7.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/2.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/6.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/5.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/6.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/7.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/2.jpg" alt="">
+        </div>
+        <div class="img-container">
+            <img src="./imgs/6.jpg" alt="">
+        </div>
+    </div>
+    <script>
+        setTimeout(() => {
+            const contaienrs = Array.from(document.querySelectorAll('.img-container'))
+            contaienrs.forEach((contain,index) => {
+                const imgHeight = contain.children[0].height
+                const spanVal = Math.floor((imgHeight / 10)) + 1
+                contain.setAttribute('style',`grid-row: auto / span ${spanVal};`)
+            })
+        }, 100)
+    </script>
+</body>
+
+</html>

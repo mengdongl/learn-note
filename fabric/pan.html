@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/fabric@latest/dist/fabric.js"></script>
+    <style>
+        .container {
+            border: 1px solid gray;
+            border-radius: 2px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .minimap {
+            border: 1px solid blue;
+            position: absolute !important;
+            top: 20px;
+            left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <div class="container">
+            <canvas id="pan" width="400" height="400"></canvas>
+            <canvas id="minimap" width="100" height="100" style="position: absolute; top: 10px; left: 10px;"></canvas>
+            <img id="my-image" src="./images/2.jpg" alt="" style="display: none;">
+        </div>
+        <div>
+            <button id="updateMinimap">updateMinimap</button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        (function () {
+            var canvas = new fabric.Canvas('pan');
+            var minimap = new fabric.Canvas('minimap', { containerClass: 'minimap', selection: false });
+            const minimapElement = document.getElementsByClassName('minimap')[0]
+            minimapElement.setAttribute('style', 'display:none')
+            var imgElement = document.getElementById('my-image');
+            const img_width = imgElement.naturalWidth || imgElement.width
+            const img_hight = imgElement.naturalHeight || imgElement.height
+            const imgSize = { width: img_width, height: img_hight }
+            const initialZoom = canvas.getWidth() / img_width
+            var imgInstance = new fabric.Image(imgElement);
+            imgInstance.canvas = canvas
+            canvas.backgroundImage = imgInstance;
+            canvas.setHeight(Math.floor((img_hight / img_width) * canvas.getWidth()))
+            canvas.setZoom(initialZoom)
+            const initialVpt = canvas.viewportTransform
+            function createCanvasEl() {
+                var originalVPT = canvas.viewportTransform;
+                // zoom to fit the display the canvas in the minimap.
+                var minimapRatio = fabric.util.findScaleToFit(canvas, minimap);
+                var scaling = minimap.getRetinaScaling();
+                console.log('scaling1', scaling)
+                canvas.viewportTransform = initialVpt;
+                var _canvas = canvas.toCanvasElement(minimapRatio * scaling);
+                canvas.viewportTransform = originalVPT;
+                canvas.requestRenderAll();
+                return _canvas;
+            }
+
+            function updateMiniMap() {
+                var _canvas = createCanvasEl();
+                minimap.backgroundImage._element = _canvas;
+                minimap.requestRenderAll();
+            }
+
+            document.getElementById('updateMinimap').addEventListener('click', updateMiniMap)
+
+            function updateMiniMapVP() {
+                var rect = minimap.getObjects()[0];
+                var designRatio = fabric.util.findScaleToFit(imgSize, canvas);
+                var totalRatio = fabric.util.findScaleToFit(imgSize, minimap);
+                //findScaleToFit（source,target）方法，将source变换成target大小需要的scale值
+                var finalRatio = designRatio / canvas.getZoom();
+                rect.scaleX = finalRatio;
+                rect.scaleY = finalRatio;
+                rect.top = minimap.backgroundImage.top - canvas.viewportTransform[5] * totalRatio / canvas.getZoom();
+                rect.left = minimap.backgroundImage.left - canvas.viewportTransform[4] * totalRatio / canvas.getZoom();
+                console.log(rect.top,rect.left)
+                minimap.requestRenderAll();
+            }
+
+            function initMinimap() {
+                var _canvas = createCanvasEl();
+                var backgroundImage = new fabric.Image(_canvas);
+                backgroundImage.scaleX = 1 / canvas.getRetinaScaling();
+                backgroundImage.scaleY = 1 / canvas.getRetinaScaling();
+                minimap.centerObject(backgroundImage);
+                minimap.backgroundColor = 'white';
+                minimap.backgroundImage = backgroundImage;
+                minimap.requestRenderAll();
+                var minimapView = new fabric.Rect({
+                    top: backgroundImage.top,
+                    left: backgroundImage.left,
+                    width: backgroundImage.width / canvas.getRetinaScaling(),
+                    height: backgroundImage.height / canvas.getRetinaScaling(),
+                    fill: 'rgba(0, 0, 255, 0.3)',
+                    cornerSize: 6,
+                    transparentCorners: false,
+                    cornerColor: 'blue',
+                    strokeWidth: 0,
+                });
+                minimapView.controls = {
+                    br: fabric.Object.prototype.controls.br,
+                };
+                minimap.add(minimapView);
+            }
+            initMinimap()
+            canvas.on('mouse:wheel', function (opt) {
+                var delta = opt.e.deltaY;
+                var zoom = canvas.getZoom();
+                zoom *= 0.999 ** delta;
+                if (zoom > 20) zoom = 20;
+                if (zoom < 0.01) zoom = 0.01;
+                canvas.zoomToPoint({ x: opt.e.offsetX, y: opt.e.offsetY }, zoom);
+                opt.e.preventDefault();
+                opt.e.stopPropagation();
+                const canvas_width = canvas.getWidth()
+                const canvas_height = canvas.getHeight()
+                var vpt = this.viewportTransform;
+                if (zoom < initialZoom) {
+                    vpt[4] = canvas_width / 2 - img_width * zoom / 2;
+                    vpt[5] = canvas_height / 2 - img_hight * zoom / 2;
+                    minimapElement.setAttribute('style', 'display:none;')
+                } else {
+                    minimapElement.setAttribute('style', 'display:block;')
+                    if (vpt[4] >= 0) {
+                        vpt[4] = 0;
+                    } else if (vpt[4] < canvas_width - img_width * zoom) {
+                        vpt[4] = canvas_width - img_width * zoom;
+                    }
+                    if (vpt[5] >= 0) {
+                        vpt[5] = 0;
+                    } else if (vpt[5] < canvas_height - img_hight * zoom) {
+                        vpt[5] = canvas_height - img_hight * zoom;
+                    }
+                }
+                updateMiniMapVP()
+            });
+            canvas.on('mouse:down', function (opt) {
+                var evt = opt.e;
+                this.isDragging = true;
+                this.selection = false;
+                this.lastPosX = evt.clientX;
+                this.lastPosY = evt.clientY;
+            });
+            canvas.on('mouse:move', function (opt) {
+                if (this.isDragging) {
+                    var e = opt.e;
+                    var zoom = canvas.getZoom();
+                    var vpt = this.viewportTransform;
+                    const canvas_width = canvas.getWidth()
+                    const canvas_height = canvas.getHeight()
+                    if (zoom < initialZoom) {
+                        vpt[4] = canvas_width / 2 - img_width * zoom / 2;
+                        vpt[5] = canvas_height / 2 - img_hight * zoom / 2;
+                    } else {
+                        vpt[4] += e.clientX - this.lastPosX;
+                        vpt[5] += e.clientY - this.lastPosY;
+                        if (vpt[4] >= 0) {
+                            vpt[4] = 0;
+                        } else if (vpt[4] < canvas_width - img_width * zoom) {
+                            vpt[4] = canvas_width - img_width * zoom;
+                        }
+                        if (vpt[5] >= 0) {
+                            vpt[5] = 0;
+                        } else if (vpt[5] < canvas_height - img_hight * zoom) {
+                            vpt[5] = canvas_height - img_hight * zoom;
+                        }
+                    }
+                    updateMiniMapVP()
+                    this.requestRenderAll();
+                    this.lastPosX = e.clientX;
+                    this.lastPosY = e.clientY;
+                }
+            });
+            canvas.on('mouse:up', function (opt) {
+                this.setViewportTransform(this.viewportTransform);
+                this.isDragging = false;
+                this.selection = true;
+            });
+        })()
+    </script>
+</body>
+
+</html>

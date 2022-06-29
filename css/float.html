@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>浮动</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .body {
+            width: 100%;
+            height: 100vh;
+            overflow: scroll;
+        }
+
+        .head {
+            height: 30vh;
+            background-image: url("./imgs/fw.jpg");
+            background-size: cover;
+            position: sticky;
+            top: -20vh;
+        }
+
+        .contain {
+            width: 100%;
+            background-color: white;
+            padding-top: 2vh;
+            display: flex;
+        }
+
+        .item {
+            width: 100%;
+            margin: 0.5vh 0;
+            box-sizing: border-box;
+            background-color: pink;
+        }
+
+        .column {
+            width: 48vw;
+            height: 100%;
+            margin: 0 1vw;
+            box-sizing: border-box;
+            display: flex;
+            flex-flow: column nowrap;
+            justify-content: flex-start;
+        }
+    </style>
+</head>
+
+<body>
+    <div class=".body">
+        <div class="head">
+
+        </div>
+        <div class="contain">
+            <div class="column">
+                <div class="item" style="height: 30vh;"></div>
+                <div class="item" style="height: 40vh;"></div>
+                <div class="item" style="height: 30vh;"></div>
+                <div class="item" style="height: 40vh;"></div>
+                <div class="item" style="height: 30vh;"></div>
+                <div class="item" style="height: 40vh;"></div>
+            </div>
+            <div class="column">
+                <div class="item" style="height: 40vh;"></div>
+                <div class="item" style="height: 30vh;"></div>
+                <div class="item" style="height: 40vh;"></div>
+                <div class="item" style="height: 30vh;"></div>
+                <div class="item" style="height: 40vh;"></div>
+                <div class="item" style="height: 30vh;"></div>
+                <div class="item" style="height: 40vh;"></div>
+                <div class="item" style="height: 30vh;"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let contain = document.querySelector('.contain')
+        function fd(fn) {
+            let timeout = null
+            return function (event) {
+                clearTimeout(timeout)
+                if (!timeout) {
+                    fn.call(this,event)
+                }
+                timeout = setTimeout(function () {
+                    timeout = null
+                }, 500)
+            }
+        }
+        const handlemousewheel = function (event) {
+            console.log('scroll event:', event)
+        }
+        const fdhandlemousewheel = fd(handlemousewheel)
+        window.addEventListener('scroll', fdhandlemousewheel)
+        contain.addEventListener("touchstart", handleStart, false)
+        contain.addEventListener("touchend", handleEnd, false);
+        contain.addEventListener("touchcancel", handleCancel, false);
+        contain.addEventListener("touchmove", handleMove, false);
+        function handleStart(evt) {
+            evt.preventDefault();
+            console.log("touchstart.");
+        }
+        function handleEnd(evt) {
+            evt.preventDefault();
+            console.log("touchend.");
+        }
+        function handleCancel(evt) {
+            evt.preventDefault();
+            console.log("touchcancel.");
+        }
+        function handleMove(evt) {
+            evt.preventDefault();
+            console.log("touchmove.");
+        }
+
+    </script>
+</body>
+
+</html>
